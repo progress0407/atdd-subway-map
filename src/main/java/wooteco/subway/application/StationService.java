@@ -1,10 +1,12 @@
 package wooteco.subway.application;
 
 import wooteco.subway.dao.StationDao;
+import wooteco.subway.di.annotaion.Peanut;
 import wooteco.subway.domain.Station;
 import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.exception.NotExistException;
 
+@Peanut
 public class StationService {
 
     public StationService() {

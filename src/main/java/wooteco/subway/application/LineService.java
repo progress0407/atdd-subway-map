@@ -1,10 +1,12 @@
 package wooteco.subway.application;
 
 import wooteco.subway.dao.LineDao;
+import wooteco.subway.di.annotaion.Peanut;
 import wooteco.subway.domain.Line;
 import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.exception.NotExistException;
 
+@Peanut
 public class LineService {
 
     public Line save(String name, String color) {
