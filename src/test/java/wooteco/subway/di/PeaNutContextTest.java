@@ -4,22 +4,29 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.util.ReflectionTestUtils;
 import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.application.LineService;
 import wooteco.subway.application.StationService;
 import wooteco.subway.di.exception.NoSuchNutDefinitionException;
 import wooteco.subway.ui.LineController;
 
+import javax.annotation.PostConstruct;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-//@SpringBootTest
 class PeaNutContextTest extends AcceptanceTest {
 
     @Autowired
     private ApplicationContext springBeanContainer;
 
-    private final PeaNutContext peaNutContext = PeaNutContext.getInstance(springBeanContainer);
+    private PeaNutContext peaNutContext;
+
+    @PostConstruct
+    public void post() {
+        peaNutContext = PeaNutContext.getInstance(springBeanContainer);
+    }
 
 
     @DisplayName("땅콩이 존재한다면 땅콩을 찾을 수 있다")
@@ -52,9 +59,15 @@ class PeaNutContextTest extends AcceptanceTest {
         assertThat(lineService1).isSameAs(lineService2);
     }
 
-    @DisplayName("메서드 테스트")
+    /**
+     * peaNutContext 에서 run() 메서드를 실행하지 않더라도
+     * 부트 초기화 구현체인 StartupApplicationListener 에서 실행을 하기 때문에 이곳에서 하지 않습니다
+     */
+    @DisplayName("DI 의존 주입이 되었는지를 테스트한다")
     @Test
-    void tt() {
-        peaNutContext.run();
+    void di_injection() {
+        LineController lineControllerBean = springBeanContainer.getBean(LineController.class);
+        LineService lineServicePeanut = (LineService) ReflectionTestUtils.getField(lineControllerBean, "lineService");
+        assertThat(lineServicePeanut).isNotNull();
     }
 }
