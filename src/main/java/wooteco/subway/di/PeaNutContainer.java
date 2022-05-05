@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,23 +24,29 @@ public class PeaNutContainer {
     private static final String PACKAGE_PATH = PROJECT_JAVA_PATH + "\\wooteco\\subway".replace("\\", PATH_SEPARATOR);
     private static final String JAVA_EXTENSION = ".java";
 
-    private Map<Class<?>, Supplier<Object>> container = new HashMap<>();
+    private final Map<Class<?>, Object> peanutContainer = new HashMap<>();
 
     public PeaNutContainer() {
         List<? extends Class<?>> classes = getClassesWithAnnotation();
-
         for (Class<?> clazz : classes) {
-            Object finalCreatedClass = getConstructedClass(clazz);
-            container.put(clazz, () -> finalCreatedClass);
+            peanutContainer.put(clazz, createInstanceDynamically(clazz));
         }
     }
 
-    public <T> T getNut(Class<T> nut) {
-        Supplier<Object> findNutSupplier = container.get(nut);
-        if (findNutSupplier == null) {
-            throw new NoSuchNutDefinitionException(nut.getSimpleName());
+    public <T> T getNut(Class<T> clazz) {
+        T peanut = (T) peanutContainer.get(clazz);
+        if (peanut == null) {
+            throw new NoSuchNutDefinitionException(clazz.getSimpleName());
         }
-        return (T) findNutSupplier.get();
+        return peanut;
+    }
+
+    private Object createInstanceDynamically(Class<?> clazz) {
+        try {
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<? extends Class<?>> getClassesWithAnnotation() {
@@ -53,14 +58,6 @@ public class PeaNutContainer {
                     .filter(clazz -> AnnotationUtils.findAnnotation(clazz, Peanut.class) != null)
                     .collect(Collectors.toUnmodifiableList());
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Object getConstructedClass(Class<?> clazz) {
-        try {
-            return clazz.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }

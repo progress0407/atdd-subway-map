@@ -14,7 +14,7 @@ class PeaNutContainerTest {
 
     private PeaNutContainer peaNutContainer = new PeaNutContainer();
 
-    @DisplayName("존재하는 땅콩을 찾을 수 있다")
+    @DisplayName("땅콩이 존재한다면 땅콩을 찾을 수 있다")
     @Test
     void can_register_custom_bean() {
         StationService stationService = peaNutContainer.getNut(StationService.class);
@@ -24,7 +24,7 @@ class PeaNutContainerTest {
         assertThat(lineService).isNotNull();
     }
 
-    @DisplayName("존재하지 않는 땅콩을 찾는다")
+    @DisplayName("존재하지 않는 땅콩을 찾을 경우 예외를 반환한다")
     @Test
     void find_non_exist_nut() {
         assertThatThrownBy(() -> peaNutContainer.getNut(LineController.class))
