@@ -13,7 +13,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,7 @@ public class PeaNutContext {
 
     private static PeaNutContext INSTANCE;
 
-    private ApplicationContext springBeanContainer;
+    private final ApplicationContext springBeanContainer;
 
     private final Map<Class<?>, Object> peanutContainer = new HashMap<>();
 
@@ -66,11 +65,6 @@ public class PeaNutContext {
         for (Class<?> clazz : classes) {
             iterateFields(clazz);
         }
-
-        loadAllClasses().stream()
-                .flatMap(clazz -> Arrays.stream(clazz.getDeclaredFields()))
-                .flatMap(field -> Arrays.stream(field.getAnnotations()))
-                .filter(annotation -> GiveMePeanut.class == annotation.annotationType());
     }
 
     private void iterateFields(Class<?> clazz) {

@@ -24,7 +24,7 @@ class PeaNutContextTest extends AcceptanceTest {
     private PeaNutContext peaNutContext;
 
     @PostConstruct
-    public void post() {
+    public void initPeanutContext() {
         peaNutContext = PeaNutContext.getInstance(springBeanContainer);
     }
 
