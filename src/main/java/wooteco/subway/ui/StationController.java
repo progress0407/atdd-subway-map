@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.application.StationService;
 import wooteco.subway.dao.StationDao;
-import wooteco.subway.di.PeaNutContext;
+import wooteco.subway.di.annotaion.GiveMePeanut;
 import wooteco.subway.domain.Station;
 import wooteco.subway.dto.StationRequest;
 import wooteco.subway.dto.StationResponse;
@@ -17,7 +17,8 @@ import java.util.stream.Collectors;
 @RestController
 public class StationController {
 
-    private final StationService stationService = PeaNutContext.getInstance().getPeanut(StationService.class);
+    @GiveMePeanut
+    private StationService stationService;
 
     @PostMapping("/stations")
     public ResponseEntity<StationResponse> createStation(

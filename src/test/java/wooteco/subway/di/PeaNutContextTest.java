@@ -2,6 +2,9 @@ package wooteco.subway.di;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.application.LineService;
 import wooteco.subway.application.StationService;
 import wooteco.subway.di.exception.NoSuchNutDefinitionException;
@@ -10,9 +13,14 @@ import wooteco.subway.ui.LineController;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class PeaNutContextTest {
+//@SpringBootTest
+class PeaNutContextTest extends AcceptanceTest {
 
-    private PeaNutContext peaNutContext = PeaNutContext.getInstance();
+    @Autowired
+    private ApplicationContext springBeanContainer;
+
+    private final PeaNutContext peaNutContext = PeaNutContext.getInstance(springBeanContainer);
+
 
     @DisplayName("땅콩이 존재한다면 땅콩을 찾을 수 있다")
     @Test
@@ -42,5 +50,11 @@ class PeaNutContextTest {
 
         assertThat(stationService1).isSameAs(stationService2);
         assertThat(lineService1).isSameAs(lineService2);
+    }
+
+    @DisplayName("메서드 테스트")
+    @Test
+    void tt() {
+        peaNutContext.run();
     }
 }

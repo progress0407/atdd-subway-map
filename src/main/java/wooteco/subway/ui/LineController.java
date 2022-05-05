@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.application.LineService;
 import wooteco.subway.dao.LineDao;
-import wooteco.subway.di.PeaNutContext;
+import wooteco.subway.di.annotaion.GiveMePeanut;
 import wooteco.subway.domain.Line;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
@@ -17,7 +17,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/lines")
 public class LineController {
 
-    private final LineService lineService = PeaNutContext.getInstance().getPeanut(LineService.class);
+//    private final LineService lineService = PeaNutContext.getInstance().getPeanut(LineService.class);
+
+    @GiveMePeanut
+    private LineService lineService;
 
     @PostMapping
     public ResponseEntity<LineResponse> createLines(@RequestBody LineRequest lineRequest) {
@@ -30,8 +33,8 @@ public class LineController {
     public ResponseEntity<List<LineResponse>> showLines() {
         List<Line> lines = LineDao.findAll();
         List<LineResponse> lineResponses = lines.stream()
-            .map(line -> new LineResponse(line.getId(), line.getName(), line.getColor()))
-            .collect(Collectors.toList());
+                .map(line -> new LineResponse(line.getId(), line.getName(), line.getColor()))
+                .collect(Collectors.toList());
         return ResponseEntity.ok(lineResponses);
     }
 
@@ -44,7 +47,7 @@ public class LineController {
 
     @PutMapping("/{id}")
     public ResponseEntity<LineResponse> updateLine(@PathVariable Long id,
-            @RequestBody LineRequest lineRequest) {
+                                                   @RequestBody LineRequest lineRequest) {
         Line line = lineService.update(id, lineRequest.getName(), lineRequest.getColor());
         LineResponse lineResponse = new LineResponse(line.getId(), line.getName(), line.getColor());
         return ResponseEntity.ok(lineResponse);

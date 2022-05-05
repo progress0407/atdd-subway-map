@@ -1,10 +1,14 @@
 package wooteco.subway.di;
 
+import org.springframework.context.ApplicationContext;
+import wooteco.subway.di.annotaion.GiveMePeanut;
 import wooteco.subway.di.annotaion.Peanut;
 import wooteco.subway.di.exception.NoSuchNutDefinitionException;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,43 +27,30 @@ public class PeaNutContext {
     private static final String PACKAGE_PATH = PROJECT_JAVA_PATH + "\\wooteco\\subway".replace("\\", PATH_SEPARATOR);
     private static final String JAVA_EXTENSION = ".java";
 
-    private static final PeaNutContext INSTANCE = new PeaNutContext();
+    private static PeaNutContext INSTANCE;
+
+    private ApplicationContext springBeanContainer;
 
     private final Map<Class<?>, Object> peanutContainer = new HashMap<>();
 
-    private PeaNutContext() {
+    private PeaNutContext(ApplicationContext springBeanContainer) {
+        this.springBeanContainer = springBeanContainer;
         List<? extends Class<?>> classes = getClassesWithAnnotation();
         for (Class<?> clazz : classes) {
             peanutContainer.put(clazz, createInstanceDynamically(clazz));
         }
     }
 
-    public static final PeaNutContext getInstance() {
+    public static final PeaNutContext getInstance(ApplicationContext springBeanContainer) {
+        if (INSTANCE == null) {
+            INSTANCE = new PeaNutContext(springBeanContainer);
+        }
         return INSTANCE;
     }
 
-/*
-    public void 피넛_주입기_만들기() {
-        List<? extends Class<?>> classes = classes();
-        classes.stream()
-                .flatMap(clazz -> clazz.getDeclaredFields())
-                .forEach(System.out::println);
+    public void run() {
+        injectPeanut();
     }
-*/
-
-/*
-    public List<? extends Class<?>> classes() {
-        try (Stream<Path> walkStream = Files.walk(Paths.get(PACKAGE_PATH))) {
-            return walkStream
-                    .filter(path -> path.toFile().isFile())
-                    .filter(path -> path.toString().endsWith(".java"))
-                    .map(this::toClassFromPath)
-                    .collect(Collectors.toUnmodifiableList());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-*/
 
     public <T> T getPeanut(Class<T> clazz) {
         T peanut = (T) peanutContainer.get(clazz);
@@ -67,6 +58,37 @@ public class PeaNutContext {
             throw new NoSuchNutDefinitionException(clazz.getSimpleName());
         }
         return peanut;
+    }
+
+    private void injectPeanut() {
+        List<? extends Class<?>> classes = classes();
+        for (Class<?> clazz : classes) {
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field field : fields) {
+                for (Annotation annotation : field.getAnnotations()) {
+                    if(annotation.annotationType() == GiveMePeanut.class) {
+                        field.setAccessible(true);
+                        try {
+                            field.set(springBeanContainer.getBean(clazz), getPeanut(field.getType()));
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private List<? extends Class<?>> classes() {
+        try (Stream<Path> fileStream = Files.walk(Paths.get(PACKAGE_PATH))) {
+            return fileStream
+                    .filter(path -> path.toFile().isFile())
+                    .filter(path -> path.toString().endsWith(".java"))
+                    .map(this::toClassFromPath)
+                    .collect(Collectors.toUnmodifiableList());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Object createInstanceDynamically(Class<?> clazz) {
