@@ -1,21 +1,23 @@
 package wooteco.subway.ui;
 
-import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.application.LineService;
 import wooteco.subway.dao.LineDao;
+import wooteco.subway.di.PeaNutContainer;
 import wooteco.subway.domain.Line;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
+
+import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
-    private final LineService lineService = new LineService();
+    private final LineService lineService = PeaNutContainer.getInstance().getPeanut(LineService.class);
 
     @PostMapping
     public ResponseEntity<LineResponse> createLines(@RequestBody LineRequest lineRequest) {

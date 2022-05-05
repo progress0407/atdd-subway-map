@@ -18,21 +18,50 @@ import java.util.stream.Stream;
 public class PeaNutContainer {
 
     private static final String PATH_SEPARATOR = File.separator;
-    private static final String PROJECT_PATH  = System.getProperty("user.dir");
+    private static final String PROJECT_PATH = System.getProperty("user.dir");
     private static final String PROJECT_JAVA_PATH = PROJECT_PATH + "\\src\\main\\java\\".replace("\\", PATH_SEPARATOR);
     private static final String PACKAGE_PATH = PROJECT_JAVA_PATH + "\\wooteco\\subway".replace("\\", PATH_SEPARATOR);
     private static final String JAVA_EXTENSION = ".java";
 
+    private static final PeaNutContainer INSTANCE = new PeaNutContainer();
+
     private final Map<Class<?>, Object> peanutContainer = new HashMap<>();
 
-    public PeaNutContainer() {
+    private PeaNutContainer() {
         List<? extends Class<?>> classes = getClassesWithAnnotation();
         for (Class<?> clazz : classes) {
             peanutContainer.put(clazz, createInstanceDynamically(clazz));
         }
     }
 
-    public <T> T getNut(Class<T> clazz) {
+    public static final PeaNutContainer getInstance() {
+        return INSTANCE;
+    }
+
+/*
+    public void 피넛_주입기_만들기() {
+        List<? extends Class<?>> classes = classes();
+        classes.stream()
+                .flatMap(clazz -> clazz.getDeclaredFields())
+                .forEach(System.out::println);
+    }
+*/
+
+/*
+    public List<? extends Class<?>> classes() {
+        try (Stream<Path> walkStream = Files.walk(Paths.get(PACKAGE_PATH))) {
+            return walkStream
+                    .filter(path -> path.toFile().isFile())
+                    .filter(path -> path.toString().endsWith(".java"))
+                    .map(this::toClassFromPath)
+                    .collect(Collectors.toUnmodifiableList());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+*/
+
+    public <T> T getPeanut(Class<T> clazz) {
         T peanut = (T) peanutContainer.get(clazz);
         if (peanut == null) {
             throw new NoSuchNutDefinitionException(clazz.getSimpleName());
@@ -43,7 +72,8 @@ public class PeaNutContainer {
     private Object createInstanceDynamically(Class<?> clazz) {
         try {
             return clazz.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }
