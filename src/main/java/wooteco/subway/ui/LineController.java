@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/lines")
 public class LineController {
 
-//    private final LineService lineService = PeaNutContext.getInstance().getPeanut(LineService.class);
-
     @GiveMePeanut
     private LineService lineService;
 

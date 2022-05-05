@@ -61,7 +61,7 @@ class PeaNutContextTest extends AcceptanceTest {
 
     /**
      * peaNutContext 에서 run() 메서드를 실행하지 않더라도
-     * 부트 초기화 구현체인 StartupApplicationListener 에서 실행을 하기 때문에 이곳에서 하지 않습니다
+     * 부트 빈 초기화 구현체인 StartupApplicationListener 에서 실행을 하기 때문에 이곳에서 하지 않습니다
      */
     @DisplayName("DI 의존 주입이 되었는지를 테스트한다")
     @Test
