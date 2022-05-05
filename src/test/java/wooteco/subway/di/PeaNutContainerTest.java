@@ -30,4 +30,17 @@ class PeaNutContainerTest {
         assertThatThrownBy(() -> peaNutContainer.getNut(LineController.class))
                 .isInstanceOf(NoSuchNutDefinitionException.class);
     }
+
+    @DisplayName("땅콩은 싱글톤이다")
+    @Test
+    void peanut_is_singleton() {
+        StationService stationService1 = peaNutContainer.getNut(StationService.class);
+        StationService stationService2 = peaNutContainer.getNut(StationService.class);
+
+        LineService lineService1 = peaNutContainer.getNut(LineService.class);
+        LineService lineService2 = peaNutContainer.getNut(LineService.class);
+
+        assertThat(stationService1).isSameAs(stationService2);
+        assertThat(lineService1).isSameAs(lineService2);
+    }
 }

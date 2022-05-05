@@ -19,9 +19,12 @@ import java.util.stream.Stream;
 
 public class PeaNutContainer {
 
-    private static final String PROJECT_PATH = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main" + File.separator + "java" + File.separator;
-    private static final String DETAIL_PROJECT_PATH = PROJECT_PATH + "wooteco" + File.separator + "subway";
+    private static final String PATH_SEPARATOR = File.separator;
+    private static final String PROJECT_PATH  = System.getProperty("user.dir");
+    private static final String PROJECT_JAVA_PATH = PROJECT_PATH + "\\src\\main\\java\\".replace("\\", PATH_SEPARATOR);
+    private static final String PACKAGE_PATH = PROJECT_JAVA_PATH + "\\wooteco\\subway".replace("\\", PATH_SEPARATOR);
     private static final String JAVA_EXTENSION = ".java";
+
     private Map<Class<?>, Supplier<Object>> container = new HashMap<>();
 
     public PeaNutContainer() {
@@ -42,11 +45,11 @@ public class PeaNutContainer {
     }
 
     private List<? extends Class<?>> getClassesWithAnnotation() {
-        try (Stream<Path> walkStream = Files.walk(Paths.get(DETAIL_PROJECT_PATH))) {
+        try (Stream<Path> walkStream = Files.walk(Paths.get(PACKAGE_PATH))) {
             return walkStream
                     .filter(path -> path.toFile().isFile())
                     .filter(path -> path.toString().endsWith(".java"))
-                    .map(this::toClass)
+                    .map(this::toClassFromPath)
                     .filter(clazz -> AnnotationUtils.findAnnotation(clazz, Peanut.class) != null)
                     .collect(Collectors.toUnmodifiableList());
         } catch (IOException e) {
@@ -62,10 +65,10 @@ public class PeaNutContainer {
         }
     }
 
-    private Class<?> toClass(Path path) {
+    private Class<?> toClassFromPath(Path path) {
         try {
             String simpleClassPath = path.toString()
-                    .replace(PROJECT_PATH, "")
+                    .replace(PROJECT_JAVA_PATH, "")
                     .replace(JAVA_EXTENSION, "")
                     .replace(File.separator, ".");
             return Class.forName(simpleClassPath);
