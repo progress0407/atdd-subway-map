@@ -1,6 +1,5 @@
 package wooteco.subway.di;
 
-import org.springframework.core.annotation.AnnotationUtils;
 import wooteco.subway.di.annotaion.Peanut;
 import wooteco.subway.di.exception.NoSuchNutDefinitionException;
 
@@ -55,7 +54,7 @@ public class PeaNutContainer {
                     .filter(path -> path.toFile().isFile())
                     .filter(path -> path.toString().endsWith(".java"))
                     .map(this::toClassFromPath)
-                    .filter(clazz -> AnnotationUtils.findAnnotation(clazz, Peanut.class) != null)
+                    .filter(clazz -> clazz.getAnnotation(Peanut.class) != null)
                     .collect(Collectors.toUnmodifiableList());
         } catch (IOException e) {
             throw new RuntimeException(e);
