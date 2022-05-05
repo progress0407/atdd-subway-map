@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class PeaNutContainer {
+public class PeaNutContext {
 
     private static final String PATH_SEPARATOR = File.separator;
     private static final String PROJECT_PATH = System.getProperty("user.dir");
@@ -23,18 +23,18 @@ public class PeaNutContainer {
     private static final String PACKAGE_PATH = PROJECT_JAVA_PATH + "\\wooteco\\subway".replace("\\", PATH_SEPARATOR);
     private static final String JAVA_EXTENSION = ".java";
 
-    private static final PeaNutContainer INSTANCE = new PeaNutContainer();
+    private static final PeaNutContext INSTANCE = new PeaNutContext();
 
     private final Map<Class<?>, Object> peanutContainer = new HashMap<>();
 
-    private PeaNutContainer() {
+    private PeaNutContext() {
         List<? extends Class<?>> classes = getClassesWithAnnotation();
         for (Class<?> clazz : classes) {
             peanutContainer.put(clazz, createInstanceDynamically(clazz));
         }
     }
 
-    public static final PeaNutContainer getInstance() {
+    public static final PeaNutContext getInstance() {
         return INSTANCE;
     }
 

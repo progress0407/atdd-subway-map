@@ -10,15 +10,15 @@ import wooteco.subway.ui.LineController;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class PeaNutContainerTest {
+class PeaNutContextTest {
 
-    private PeaNutContainer peaNutContainer = PeaNutContainer.getInstance();
+    private PeaNutContext peaNutContext = PeaNutContext.getInstance();
 
     @DisplayName("땅콩이 존재한다면 땅콩을 찾을 수 있다")
     @Test
     void can_register_custom_bean() {
-        StationService stationService = peaNutContainer.getPeanut(StationService.class);
-        LineService lineService = peaNutContainer.getPeanut(LineService.class);
+        StationService stationService = peaNutContext.getPeanut(StationService.class);
+        LineService lineService = peaNutContext.getPeanut(LineService.class);
 
         assertThat(stationService).isNotNull();
         assertThat(lineService).isNotNull();
@@ -27,18 +27,18 @@ class PeaNutContainerTest {
     @DisplayName("존재하지 않는 땅콩을 찾을 경우 예외를 반환한다")
     @Test
     void find_non_exist_nut() {
-        assertThatThrownBy(() -> peaNutContainer.getPeanut(LineController.class))
+        assertThatThrownBy(() -> peaNutContext.getPeanut(LineController.class))
                 .isInstanceOf(NoSuchNutDefinitionException.class);
     }
 
     @DisplayName("땅콩은 싱글톤이다")
     @Test
     void peanut_is_singleton() {
-        StationService stationService1 = peaNutContainer.getPeanut(StationService.class);
-        StationService stationService2 = peaNutContainer.getPeanut(StationService.class);
+        StationService stationService1 = peaNutContext.getPeanut(StationService.class);
+        StationService stationService2 = peaNutContext.getPeanut(StationService.class);
 
-        LineService lineService1 = peaNutContainer.getPeanut(LineService.class);
-        LineService lineService2 = peaNutContainer.getPeanut(LineService.class);
+        LineService lineService1 = peaNutContext.getPeanut(LineService.class);
+        LineService lineService2 = peaNutContext.getPeanut(LineService.class);
 
         assertThat(stationService1).isSameAs(stationService2);
         assertThat(lineService1).isSameAs(lineService2);

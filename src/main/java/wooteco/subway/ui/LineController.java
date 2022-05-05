@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wooteco.subway.application.LineService;
 import wooteco.subway.dao.LineDao;
-import wooteco.subway.di.PeaNutContainer;
+import wooteco.subway.di.PeaNutContext;
 import wooteco.subway.domain.Line;
 import wooteco.subway.dto.LineRequest;
 import wooteco.subway.dto.LineResponse;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/lines")
 public class LineController {
 
-    private final LineService lineService = PeaNutContainer.getInstance().getPeanut(LineService.class);
+    private final LineService lineService = PeaNutContext.getInstance().getPeanut(LineService.class);
 
     @PostMapping
     public ResponseEntity<LineResponse> createLines(@RequestBody LineRequest lineRequest) {
