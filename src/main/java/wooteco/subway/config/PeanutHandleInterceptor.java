@@ -16,8 +16,7 @@ public class PeanutHandleInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        Class<? extends HttpServletRequest> aClass = request.getClass();
-        peaNutContext.updateState(request);
+        peaNutContext.updateRequestState(request);
         return true;
     }
 }

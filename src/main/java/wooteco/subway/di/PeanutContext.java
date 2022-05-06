@@ -60,35 +60,40 @@ public class PeanutContext {
 
     public <T> T getPeanut(Class<T> clazz) {
         T peanut = (T) peanutContainer.get(clazz);
+
         if (peanut == null) {
             throw new NoSuchPeanutDefinitionException(clazz.getSimpleName());
         }
+
+        if(PeanutLifeCycle.PROTOTYPE == classToLifeCycle.get(clazz)) {
+            recreateObject(clazz);
+        }
+
         return peanut;
     }
 
-    public void updateState(HttpServletRequest request) {
+    public void updateRequestState(HttpServletRequest request) {
         this.previousRequest = request;
 
         if (request == null) {
             return;
         }
 
-        recreateClassesByLifeCycle(request);
+        recreateObjectsByLifeCycle(request);
     }
 
-    private void recreateClassesByLifeCycle(HttpServletRequest request) {
+    private void recreateObjectsByLifeCycle(HttpServletRequest request) {
         for (Class<?> clazz : classToLifeCycle.keySet()) {
             PeanutLifeCycle peanutLifeCycle = classToLifeCycle.get(clazz);
-
-            recreateClassByLifeCycle(request, clazz, peanutLifeCycle);
+            recreateObjectsByLifeCycle(request, clazz, peanutLifeCycle);
         }
     }
 
-    private void recreateClassByLifeCycle(HttpServletRequest request, Class<?> clazz, PeanutLifeCycle peanutLifeCycle) {
-        peanutLifeCycle.recreateObjectByLifeCycleCondition(request, previousRequest, () -> recreateClassObject(clazz));
+    private void recreateObjectsByLifeCycle(HttpServletRequest request, Class<?> clazz, PeanutLifeCycle peanutLifeCycle) {
+        peanutLifeCycle.recreateObjectByLifeCycleCondition(request, previousRequest, () -> recreateObject(clazz));
     }
 
-    private void recreateClassObject(Class<?> clazz) {
+    private void recreateObject(Class<?> clazz) {
         peanutContainer.replace(clazz, createInstanceDynamically(clazz));
     }
 

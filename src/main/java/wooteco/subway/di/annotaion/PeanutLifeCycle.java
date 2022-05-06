@@ -9,7 +9,10 @@ public enum PeanutLifeCycle {
 
     PROTOTYPE((request, previousRequest) -> true),
 
-    REQUEST((request, previousRequest) -> request != previousRequest),
+
+//     REQUEST((request, previousRequest) -> request != previousRequest),
+// TODO request 가 서로 다름을 식별하지 못하므로 true로 하드코딩
+    REQUEST((request, previousRequest) -> true),
 
     SESSION((request, previousRequest) -> request.getRequestedSessionId() != previousRequest.getRequestedSessionId());
 

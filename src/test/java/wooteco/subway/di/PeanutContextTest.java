@@ -12,6 +12,8 @@ import wooteco.subway.application.LineService;
 import wooteco.subway.application.StationService;
 import wooteco.subway.di.exception.NoSuchPeanutDefinitionException;
 import wooteco.subway.test.service.TestPrototypeService;
+import wooteco.subway.test.service.TestRequestService;
+import wooteco.subway.test.service.TestSessionService;
 import wooteco.subway.test.service.TestSingletonService;
 import wooteco.subway.ui.LineController;
 
@@ -87,15 +89,52 @@ class PeanutContextTest extends AcceptanceTest {
         assertThat(peanut1).isSameAs(peanut2);
     }
 
-
     @DisplayName("DI 주입이 프로토타입 스코프로 동작하는지를 검증한다")
     @Test
     void inject_prototype() {
-        Request.GET.request("/test/prototype");
         TestPrototypeService peanut1 = peanutContext.getPeanut(TestPrototypeService.class);
-
-        Request.GET.request("/test/prototype");
         TestPrototypeService peanut2 = peanutContext.getPeanut(TestPrototypeService.class);
+
+        assertThat(peanut1).isNotSameAs(peanut2);
+    }
+    
+    @DisplayName("DI 주입이 세션 스코프로 동작하는지를 검증한다 ")
+    @Test
+    void inject_session() {
+        RestAssured.given()
+                .sessionId("session-1")
+                .when()
+                .get("/test/session");
+        TestSessionService peanut1 = peanutContext.getPeanut(TestSessionService.class);
+
+        RestAssured.given()
+                .sessionId("session-1")
+                .when()
+                .get("/test/session");
+        TestSessionService peanut2 = peanutContext.getPeanut(TestSessionService.class);
+
+        RestAssured.given()
+                .sessionId("session-2")
+                .when()
+                .get("/test/session");
+        TestSessionService peanut3 = peanutContext.getPeanut(TestSessionService.class);
+
+        assertThat(peanut1).isSameAs(peanut2);
+        assertThat(peanut2).isSameAs(peanut3);
+    }
+
+    /**
+     * 스프링 빈 컨테이너 request 스코프가 request 를 다루는 방법에 대해 알아볼 필요가 있다...
+     */
+//    @Disabled
+    @DisplayName("DI 주입이 request 스코프로 동작하는지를 검증한다 ")
+    @Test
+    void inject_request() {
+        Request.GET.request("/test/request");
+        TestRequestService peanut1 = peanutContext.getPeanut(TestRequestService.class);
+
+        Request.GET.request("/test/request");
+        TestRequestService peanut2 = peanutContext.getPeanut(TestRequestService.class);
 
         assertThat(peanut1).isNotSameAs(peanut2);
     }
