@@ -8,7 +8,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import wooteco.subway.acceptance.AcceptanceTest;
 import wooteco.subway.application.LineService;
 import wooteco.subway.application.StationService;
-import wooteco.subway.di.exception.NoSuchNutDefinitionException;
+import wooteco.subway.di.exception.NoSuchPeanutDefinitionException;
 import wooteco.subway.ui.LineController;
 
 import javax.annotation.PostConstruct;
@@ -28,7 +28,6 @@ class PeaNutContextTest extends AcceptanceTest {
         peaNutContext = PeaNutContext.getInstance(springBeanContainer);
     }
 
-
     @DisplayName("땅콩이 존재한다면 땅콩을 찾을 수 있다")
     @Test
     void can_register_custom_bean() {
@@ -43,7 +42,7 @@ class PeaNutContextTest extends AcceptanceTest {
     @Test
     void find_non_exist_nut() {
         assertThatThrownBy(() -> peaNutContext.getPeanut(LineController.class))
-                .isInstanceOf(NoSuchNutDefinitionException.class);
+                .isInstanceOf(NoSuchPeanutDefinitionException.class);
     }
 
     @DisplayName("땅콩은 싱글톤이다")

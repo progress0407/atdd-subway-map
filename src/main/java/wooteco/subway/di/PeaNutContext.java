@@ -3,8 +3,9 @@ package wooteco.subway.di;
 import org.springframework.context.ApplicationContext;
 import wooteco.subway.di.annotaion.GiveMePeanut;
 import wooteco.subway.di.annotaion.Peanut;
-import wooteco.subway.di.exception.NoSuchNutDefinitionException;
+import wooteco.subway.di.exception.NoSuchPeanutDefinitionException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -48,6 +49,10 @@ public class PeaNutContext {
         return INSTANCE;
     }
 
+    public static void updateState(HttpServletRequest request) {
+
+    }
+
     public void run() {
         injectPeanut();
     }
@@ -55,7 +60,7 @@ public class PeaNutContext {
     public <T> T getPeanut(Class<T> clazz) {
         T peanut = (T) peanutContainer.get(clazz);
         if (peanut == null) {
-            throw new NoSuchNutDefinitionException(clazz.getSimpleName());
+            throw new NoSuchPeanutDefinitionException(clazz.getSimpleName());
         }
         return peanut;
     }
