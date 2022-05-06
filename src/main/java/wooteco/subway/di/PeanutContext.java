@@ -67,7 +67,6 @@ public class PeanutContext {
     }
 
     public void updateState(HttpServletRequest request) {
-        System.out.println("request.equals(previousRequest) = " + request.equals(previousRequest));
         this.previousRequest = request;
 
         if (request == null) {

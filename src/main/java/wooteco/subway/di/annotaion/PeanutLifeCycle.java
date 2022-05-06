@@ -23,7 +23,9 @@ public enum PeanutLifeCycle {
         this.condition = condition;
     }
 
-    public void recreateObjectByLifeCycleCondition(HttpServletRequest request, HttpServletRequest previousRequest, Runnable callbackFunction) {
+    public void recreateObjectByLifeCycleCondition(HttpServletRequest request,
+                                                   HttpServletRequest previousRequest,
+                                                   Runnable callbackFunction) {
         if (condition.test(request, previousRequest)) {
             callbackFunction.run();
         }
