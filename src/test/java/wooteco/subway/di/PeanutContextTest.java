@@ -16,16 +16,16 @@ import javax.annotation.PostConstruct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class PeaNutContextTest extends AcceptanceTest {
+class PeanutContextTest extends AcceptanceTest {
 
     @Autowired
     private ApplicationContext springBeanContainer;
 
-    private PeaNutContext peaNutContext;
+    private PeanutContext peaNutContext;
 
     @PostConstruct
     public void initPeanutContext() {
-        peaNutContext = PeaNutContext.getInstance(springBeanContainer);
+        peaNutContext = PeanutContext.getInstance(springBeanContainer);
     }
 
     @DisplayName("땅콩이 존재한다면 땅콩을 찾을 수 있다")

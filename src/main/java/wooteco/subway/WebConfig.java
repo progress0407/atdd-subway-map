@@ -5,14 +5,14 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import wooteco.subway.config.PeanutHandleInterceptor;
-import wooteco.subway.di.PeaNutContext;
+import wooteco.subway.di.PeanutContext;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final PeaNutContext peaNutContext;
+    private final PeanutContext peaNutContext;
 
-    public WebConfig(PeaNutContext peaNutContext) {
+    public WebConfig(PeanutContext peaNutContext) {
         this.peaNutContext = peaNutContext;
     }
 

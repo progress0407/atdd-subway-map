@@ -1,21 +1,23 @@
 package wooteco.subway.config;
 
 import org.springframework.web.servlet.HandlerInterceptor;
-import wooteco.subway.di.PeaNutContext;
+import wooteco.subway.di.PeanutContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class PeanutHandleInterceptor implements HandlerInterceptor {
 
-    private final PeaNutContext peaNutContext;
+    private final PeanutContext peaNutContext;
 
-    public PeanutHandleInterceptor(PeaNutContext peaNutContext) {
+    public PeanutHandleInterceptor(PeanutContext peaNutContext) {
         this.peaNutContext = peaNutContext;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        Class<? extends HttpServletRequest> aClass = request.getClass();
+        System.out.println("aClass = " + aClass);
         peaNutContext.updateState(request);
         return true;
     }

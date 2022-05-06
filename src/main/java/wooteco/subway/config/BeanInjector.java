@@ -3,7 +3,7 @@ package wooteco.subway.config;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import wooteco.subway.di.PeaNutContext;
+import wooteco.subway.di.PeanutContext;
 
 @Configuration
 public class BeanInjector {
@@ -15,7 +15,7 @@ public class BeanInjector {
     }
 
     @Bean
-    public PeaNutContext peaNutContext() {
-        return PeaNutContext.getInstance(applicationContext);
+    public PeanutContext peaNutContext() {
+        return PeanutContext.getInstance(applicationContext);
     }
 }
