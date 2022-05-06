@@ -49,8 +49,8 @@ public class PeaNutContext {
         return INSTANCE;
     }
 
-    public static void updateState(HttpServletRequest request) {
-
+    public void updateState(HttpServletRequest request) {
+        System.out.println("PeaNutContext.updateState");
     }
 
     public void run() {

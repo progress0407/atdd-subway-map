@@ -8,10 +8,15 @@ import javax.servlet.http.HttpServletResponse;
 
 public class PeanutHandleInterceptor implements HandlerInterceptor {
 
+    private final PeaNutContext peaNutContext;
+
+    public PeanutHandleInterceptor(PeaNutContext peaNutContext) {
+        this.peaNutContext = peaNutContext;
+    }
+
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("PeanutHandleInterceptor.preHandle");
-        PeaNutContext.updateState(request);
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        peaNutContext.updateState(request);
         return true;
     }
 }
