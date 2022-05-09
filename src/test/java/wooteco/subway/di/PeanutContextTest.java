@@ -123,10 +123,6 @@ class PeanutContextTest extends AcceptanceTest {
         assertThat(peanut2).isSameAs(peanut3);
     }
 
-    /**
-     * 스프링 빈 컨테이너 request 스코프가 request 를 다루는 방법에 대해 알아볼 필요가 있다...
-     */
-//    @Disabled
     @DisplayName("DI 주입이 request 스코프로 동작하는지를 검증한다 ")
     @Test
     void inject_request() {

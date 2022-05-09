@@ -7,7 +7,7 @@ import wooteco.subway.domain.Line;
 import wooteco.subway.exception.DuplicateException;
 import wooteco.subway.exception.NotExistException;
 
-@Peanut(PeanutLifeCycle.REQUEST)
+@Peanut(PeanutLifeCycle.SINGLETON)
 public class LineService {
 
     public Line save(String name, String color) {
